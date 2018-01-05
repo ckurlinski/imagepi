@@ -1,0 +1,31 @@
+#------------------------------------------------------------------------------#
+## _main_menu ##
+# Main Menu
+  _main_menu()  {
+  		HEADING="RPI Mount"
+			_sep
+			_note "PWD = ${SOURCE}"
+			_note "Working Image : ${_rpi_img}" 
+			_note "Working Mount Point : ${_rpi_mount}"
+			# Menu listing
+  			l0=(
+  				"Mount RPI Image"
+  				"Chroot into RPi Image"
+					"Umount RPi Image"
+					"Resize the Raspberry Pi image"
+					"Select apt sources"
+  				"Exit"
+  			)
+      # Command map
+  			opt0=(
+  				'_image_mount_yn'
+  				'_rpi_chroot'
+          '_image_umount_yn'
+					'_img_partition_update'
+					'_rpi_source_list'
+  				'exit'
+  				)
+      # Execute Menu
+        _g_menu_fn
+  }
+#------------------------------------------------------------------------------#

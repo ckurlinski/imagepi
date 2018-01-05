@@ -1,0 +1,68 @@
+#!/bin/bash
+#------------------------------------------------------------------------------#
+## aurgument_test ##
+# Test if Raspberry Pi image is provided
+		if [[ $# -eq 0 ]] ; then
+			echo 'Missing image name, Aborting....'
+			exit 1
+		fi
+#------------------------------------------------------------------------------#
+# Follow symbolic link to source directory
+#  and run from that directory
+  SOURCE=$(dirname $(readlink -f $0))
+  cd ${SOURCE}
+#------------------------------------------------------------------------------#
+## source_conf_scripts ##
+# Execute to populate configs
+  source_conf_scripts() {
+    find . -type f -name "*.conf" \
+      ! -path "./.git/*" \
+      | sed 's/\.\///g' \
+      | awk '{print"source "$0}' > incl.sh
+  }
+#------------------------------------------------------------------------------#
+## source_menu_scripts ##
+# Execute to populate menus
+  source_menu_scripts() {
+    find . -type f -name "*.menu" \
+      ! -path "./.git/*" \
+      | sed 's/\.\///g' \
+      | awk '{print"source "$0}' >> incl.sh
+  }
+#------------------------------------------------------------------------------#
+## source_set_mod ##
+# Execute to set mode on scripts
+  source_set_mod() {
+    find . -type f -name "*.sh" \
+      ! -path "./.git/*" \
+      ! -name "incl.sh" \
+      | xargs chmod 644
+  }
+#------------------------------------------------------------------------------#
+## source_sh_scripts ##
+# Execute to populate source scripts
+  source_sh_scripts() {
+      find . -type f -name "*.sh" \
+        ! -path "./.git/*" \
+        ! -name "incl.sh" \
+        ! -name "misc.sh" \
+        | sed 's/\.\///g' \
+        | awk '{print"source "$0}' >> incl.sh
+  }
+#------------------------------------------------------------------------------#
+# Create Source File: ./incl.sh
+# Automatically updates incl.sh to include all *.conf, *.menu and *.sh in the
+#  tree except .git folders, and incl.sh
+  source_conf_scripts
+  source_menu_scripts
+  source_sh_scripts
+  source_set_mod
+#------------------------------------------------------------------------------#
+# Set Sources to freshly created incl.sh
+  source incl.sh
+#------------------------------------------------------------------------------#
+# Clear screen and Set color outputs
+	clear
+	_set_colors
+#------------------------------------------------------------------------------#
+_main_menu
